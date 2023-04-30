@@ -9,6 +9,7 @@ public class Main {
         cadastrarVotacao(eleitores);
         eleitoresPorSecao(eleitores);
         maiormenorEleitoresPorSecao(eleitores);
+        votosPorCandidatos(eleitores);
     }
 
     public static void cadastrarVotacao(Votacao[] eleitores){
@@ -16,7 +17,7 @@ public class Main {
         int i;
         for(i=0;i < 200;i++){
             eleitores[i].numeroSecao=aleatorio.nextInt(11);
-            eleitores[i].numeroCandidato=aleatorio.nextInt(300);
+            eleitores[i].numeroCandidato=aleatorio.nextInt(301);
         }
     }
     public static void eleitoresPorSecao(Votacao[] eleitores){
@@ -82,5 +83,19 @@ public class Main {
         }
         System.out.println("Secao com maior numero de eleitores:"+secaoMaior);
         System.out.println(("Secao com menor numero de eleitores:"+secaoMenor));
+    }
+
+    public static void votosPorCandidatos(Votacao[] eleitores){
+        int i,j;
+        int numCandidatos=0;
+        for(j=0;j<300;j++){
+            for(i=0;i<200;i++) {
+                if (eleitores[i].numeroCandidato == j) {
+                    numCandidatos += 1;
+                }
+            }
+            System.out.println("Votos do candidato " + j + ": " + numCandidatos);
+            numCandidatos = 0;
+        }
     }
 }
