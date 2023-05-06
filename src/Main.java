@@ -1,15 +1,33 @@
+import javax.sound.midi.SysexMessage;
 import java.io.*;
 import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
+        int i;
+        int [] eleitoresPorSecao=new int [11];
         Votacao[] eleitores=new Votacao[200];
-        for(int i=0;i < 200;i++){
+
+        String nomeArquivo="ArquivoDeVotação.txt";
+        BufferedWriter escreva=new BufferedWriter(new FileWriter(nomeArquivo));
+
+        for(i=0;i < 200;i++){
             eleitores[i]=new Votacao();
         }
+
         cadastrarVotacao(eleitores);
-        eleitoresPorSecao(eleitores);
-        maiormenorEleitoresPorSecao(eleitores);
+        eleitoresPorSecao=eleitoresPorSecao(eleitores);
+        for(i=0;i<11;i++){
+            escreva.write(Integer.toString(eleitoresPorSecao[i]));
+            escreva.newLine();
+        }
+        escreva.write("maior num de eleitores"+Integer.toString(maiorEleitoresPorSecao(eleitores)));
+        escreva.newLine();
+        escreva.write("menor num de eleitores"+Integer.toString(menorEleitoresPorSecao(eleitores)));
+        escreva.newLine();
         votosPorCandidatos(eleitores);
+
+        escreva.close();
+        System.exit(0);
     }
 
     public static void cadastrarVotacao(Votacao[] eleitores){
@@ -20,48 +38,25 @@ public class Main {
             eleitores[i].numeroCandidato=aleatorio.nextInt(301);
         }
     }
-    public static void eleitoresPorSecao(Votacao[] eleitores){
-        int [] ordenSecao=new int[200];
+    public static int [] eleitoresPorSecao(Votacao[] eleitores){
         int [] eleitoresPorSecao=new int [11];
-        int numCand=0,secaoMaiorEleitores=0,secaoMenorEleitores=0;
-        int troca=0;
-        int i,j;
-        for(i=0;i < 199; i++) ordenSecao[i]=eleitores[i].numeroSecao;
-        for(i=0;i < 199;i++){
-            if(ordenSecao[i]>ordenSecao[i+1]){
-                troca=ordenSecao[i];
-                ordenSecao[i]=ordenSecao[i+1];
-                ordenSecao[i+1]=troca;
-                i=-1;
-            }
-        }
+        int numCand=0;
+        int i;
+        int j;
         for(j=0;j < 11;j++) {
             for (i = 0; i < 200; i++) {
-                if(ordenSecao[i]==j) numCand = numCand + 1;
+                if(eleitores[i].numeroSecao==j) numCand = numCand + 1;
             }
             eleitoresPorSecao[j]=numCand;
-            System.out.println("Numero de eleitores na secao "+j+":"+eleitoresPorSecao[j]);
-            if(j==0){
-                secaoMaiorEleitores=numCand;
-                secaoMenorEleitores=numCand;
-            }else{
-                if(secaoMaiorEleitores<numCand){
-                    secaoMaiorEleitores=numCand;
-                }
-                if(secaoMenorEleitores>numCand){
-                    secaoMenorEleitores=numCand;
-                }
-            }
             numCand=0;
         }
-        System.out.println(secaoMaiorEleitores);
-        System.out.println((secaoMenorEleitores));
+        return eleitoresPorSecao;
     }
-    public static void maiormenorEleitoresPorSecao(Votacao[] eleitores){
+    public static int maiorEleitoresPorSecao(Votacao[] eleitores){
         int i,j;
         int numEleitores=0;
-        int secaoMaior=0,secaoMenor=0;
-        int maior=0,menor=0;
+        int secaoMaior=0;
+        int maior=0;
         for(i=0;i<11;i++) {
             for (j = 0; j < 200; j++) {
                 if (eleitores[j].numeroSecao == i) {
@@ -72,6 +67,21 @@ public class Main {
                 secaoMaior = i;
                 maior=numEleitores;
             }
+            numEleitores=0;
+        }
+        return secaoMaior;
+    }
+    public static int menorEleitoresPorSecao(Votacao[] eleitores){
+        int i,j;
+        int numEleitores=0;
+        int secaoMenor=0;
+        int maior=0,menor=0;
+        for(i=0;i<11;i++) {
+            for (j = 0; j < 200; j++) {
+                if (eleitores[j].numeroSecao == i) {
+                    numEleitores += 1;
+                }
+            }
             if(i==0){
                 menor=numEleitores;
             }
@@ -81,8 +91,8 @@ public class Main {
             }
             numEleitores=0;
         }
-        System.out.println("Secao com maior numero de eleitores:"+secaoMaior);
         System.out.println(("Secao com menor numero de eleitores:"+secaoMenor));
+        return secaoMenor;
     }
 
     public static void votosPorCandidatos(Votacao[] eleitores){
